@@ -15,9 +15,7 @@ ENV/
 /playwright/.cache/
 
 # Reports
-/reports/
-*.html
-*.log
+#/reports/*.html
 
 # Traces
 /traces/

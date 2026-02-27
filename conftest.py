@@ -1,6 +1,7 @@
 import pytest
 import os
 from apiCore.crudMethods import CrudMethods
+from pages.page_factory import PageFactory
 
 # create required folders for reports and traces before any tests run
 def pytest_configure(config):
@@ -43,10 +44,21 @@ def trace_each_test(request):
         context.tracing.stop(path=trace_path)
     else:
         context.tracing.stop()
-            
+
+@pytest.fixture
+def web_app(page):
+    return PageFactory(page)
+
 # API client fixture
 @pytest.fixture
 def api_client():
     client = CrudMethods()
     yield client
     client.close()    
+
+def pytest_configure(config):
+    if hasattr(config, "_metadata"):
+        config._metadata["Project"] = "OpenLibrary Test Automation"
+        config._metadata["Base URL"] = "https://openlibrary.org"
+        config._metadata["Browser"] = "Chromium"
+        config._metadata["Test Types"] = "API, UI"   

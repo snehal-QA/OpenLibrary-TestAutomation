@@ -5,6 +5,7 @@ class SearchResultsPage(BasePage):
         super().__init__(page)
         # Locators
         self.result_items = page.locator("li.searchResultItem")
+        self.sort_dropdown = page.locator("details.sort-dropper summary")
 
     def result_count(self) -> int:
         return self.result_items.count()
@@ -17,3 +18,18 @@ class SearchResultsPage(BasePage):
         author_locator = self.result_items.nth(index).locator("a.searchResultAuthor, span.bookauthor a").first
         author_locator.wait_for(state="visible")
         author_locator.click()
+
+    def sort_by(self, option_value: str) -> None:
+        sort_option = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
+        super().sort_by(self.sort_dropdown, sort_option)    
+
+    def get_result_title(self, index: int) -> str:
+        EXCLUDED_KEYWORDS = ["Collection", "Box Set", "Boxset", "Series"]
+        count = self.result_items.count()
+        for i in range(index, count):
+            title_locator = self.result_items.nth(i).locator("a.results")
+            if title_locator.count():
+                title = title_locator.first.inner_text().strip()
+                if not any(keyword in title for keyword in EXCLUDED_KEYWORDS):
+                    return title
+        return ""

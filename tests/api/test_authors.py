@@ -45,3 +45,44 @@ def test_author_website_url_is_correct_for_first_book_search(api_client, search_
     assert expected_website_url in actual_website_url, (
         f"Expected '{expected_website_url}' but got '{actual_website_url}'"
     )
+
+@pytest.mark.api
+@pytest.mark.parametrize(
+    "search_params",
+    [
+        ({"title": "Harry Potter", "author": "Rowling"}),
+    ],
+)
+def test_paginated_docs_count_never_exceeds_total_results_found(api_client, search_params):
+    response = api_client.get_operation(
+        Endpoints.SEARCH_BOOKS,
+        query_params=search_params
+    ).json()
+
+    assert response["numFound"] > 0, "No results found"
+    assert len(response["docs"]) > 0, "Docs array is empty"
+    assert len(response["docs"]) <= response["numFound"], (
+        f"Docs returned ({len(response['docs'])}) exceeds numFound ({response['numFound']})"
+    )
+
+@pytest.mark.parametrize(
+    "search_params",
+    [
+        ({"title": "xyzabc123456", "author": "xyz123456"}),
+    ],
+)
+@pytest.mark.api
+def test_search_returns_no_results_for_invalid_query(api_client, search_params):
+
+    # Step 1 — Search with a invalid query
+    search_book_response = api_client.get_operation(
+        Endpoints.SEARCH_BOOKS,
+        query_params=search_params
+    )
+    search_book_data = search_book_response.json()
+
+    # Step 2 — Validate no results are returned
+    assert search_book_data["numFound"] == 0, (
+        f"Expected no results but got {search_book_data['numFound']}"
+    )
+    assert search_book_data["docs"] == [], "Expected empty docs list but got results"    

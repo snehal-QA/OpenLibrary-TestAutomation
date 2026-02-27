@@ -16,3 +16,10 @@ class BasePage:
     # Waits
     def wait_for_element_to_be_visible(self, loc: Locator, timeout: int = 5000):
         loc.wait_for(state="visible", timeout=timeout)
+
+    # Sorting
+    def sort_by(self, sort_dropdown: Locator, sort_option: Locator) -> None:
+        sort_dropdown.wait_for(state="visible")
+        sort_dropdown.click()
+        sort_option.wait_for(state="visible")
+        sort_option.click()

@@ -8,11 +8,8 @@ class AuthorDetailsPage(BasePage):
         self.book_titles = page.locator("li.searchResultItem.sri--w-main h3.booktitle a.results")
     
     def sort_by(self, option_value: str) -> None:
-        self.sort_dropdown.wait_for(state="visible")
-        self.sort_dropdown.click()
-        locator = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
-        locator.wait_for(state="visible")
-        locator.click()
+        sort_option = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
+        super().sort_by(self.sort_dropdown, sort_option)    
 
     def get_top_rated_book_title(self) -> str:
         EXCLUDED_KEYWORDS = ["Collection", "Box Set", "Series"]
