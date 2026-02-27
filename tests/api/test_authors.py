@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
     ],
 )
 @pytest.mark.api
-def test_author_website_url_is_correct_for_book_search(api_client, search_params, expected_author_name, expected_website_url):
+def test_author_website_url_is_correct_for_first_book_search(api_client, search_params, expected_author_name, expected_website_url):
 
     # 1. Search for the book by title and author
     search_book_response = api_client.get_operation(

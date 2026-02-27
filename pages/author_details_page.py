@@ -1,13 +1,10 @@
-from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
 
 class AuthorDetailsPage(BasePage):
-    def __init__(self, page: Page):
+    def __init__(self, page):
         super().__init__(page)
         self.author_name = page.locator("h1")
         self.sort_dropdown = page.locator("details.sort-dropper summary.tool-button")
-        self.works_list = page.locator("ul.list-books")
-        self.work_rows = page.locator("li.searchResultItem.sri--w-main")
         self.book_titles = page.locator("li.searchResultItem.sri--w-main h3.booktitle a.results")
     
     def sort_by(self, option_value: str) -> None:

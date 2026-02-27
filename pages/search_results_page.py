@@ -1,13 +1,10 @@
-from playwright.sync_api import Locator, expect
 from pages.base_page import BasePage
-from pages.author_details_page import AuthorDetailsPage
 
 class SearchResultsPage(BasePage):
     def __init__(self, page):
         super().__init__(page)
         # Locators
         self.result_items = page.locator("li.searchResultItem")
-        self.first_result = self.result_items.first
 
     def result_count(self) -> int:
         return self.result_items.count()
