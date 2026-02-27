@@ -1,11 +1,30 @@
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
+DEFAULT_TIMEOUT = 10
 
 class CrudMethods:
     def __init__(self):
         self.session = requests.Session()
-        self.base_url = "https://openlibrary.org"
 
-    def get_operation(self, endpoint,query_params: dict = None) -> requests.Response:
-        url = self.base_url + endpoint
-        response = self.session.get(url, query_params)
+    def get_operation(
+            self, 
+            endpoint_url,
+            query_params: dict = None,
+            timeout:int = DEFAULT_TIMEOUT
+            ) -> requests.Response:
+        logger.info("GET %s params=%s", endpoint_url, query_params)
+        response = self.session.get(
+            endpoint_url, 
+            params=query_params, 
+            timeout=timeout
+            )
+        logger.debug("Response %s from %s", response.status_code, endpoint_url)
+        logger.debug("Response body (first 500 chars): %s", response.text[:500])
+        # Fail fast for 4xx/5xx so tests don't silently continue with bad responses
+        response.raise_for_status()
         return response
+    
+    def close(self):
+        self.session.close()

@@ -19,6 +19,9 @@ ENV/
 *.html
 *.log
 
+# Traces
+/traces/
+
 # IDE
 .vscode/
 .idea/
