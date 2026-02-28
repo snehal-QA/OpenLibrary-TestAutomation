@@ -22,4 +22,7 @@ class AdvancedSearchPage(BasePage):
         if author:
             self.fill(self.author_input, author)
         self.search_button.click()
+        # Wait for search results to load
+        self.page.wait_for_load_state("domcontentloaded")
+        self.page.locator("li.searchResultItem").first.wait_for(state="visible", timeout=15000)
         return self

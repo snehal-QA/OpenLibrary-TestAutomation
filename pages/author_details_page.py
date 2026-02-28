@@ -9,7 +9,9 @@ class AuthorDetailsPage(BasePage):
     
     def sort_by(self, option_value: str) -> None:
         sort_option = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
-        super().sort_by(self.sort_dropdown, sort_option)    
+        super().sort_by(self.sort_dropdown, sort_option)
+         # Wait for results to refresh
+        self.book_titles.first.wait_for(state="visible", timeout=15000)
 
     def get_top_rated_book_title(self) -> str:
         EXCLUDED_KEYWORDS = ["Collection", "Box Set", "Series"]

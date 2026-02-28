@@ -2,7 +2,7 @@ import requests
 import logging
 
 logger = logging.getLogger(__name__)
-DEFAULT_TIMEOUT = 10
+DEFAULT_TIMEOUT = 30
 
 class CrudMethods:
     def __init__(self):
@@ -22,8 +22,6 @@ class CrudMethods:
             )
         logger.debug("Response %s from %s", response.status_code, endpoint_url)
         logger.debug("Response body (first 500 chars): %s", response.text[:500])
-        # Fail fast for 4xx/5xx so tests don't silently continue with bad responses
-        response.raise_for_status()
         return response
     
     def close(self):

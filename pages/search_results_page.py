@@ -21,7 +21,9 @@ class SearchResultsPage(BasePage):
 
     def sort_by(self, option_value: str) -> None:
         sort_option = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
-        super().sort_by(self.sort_dropdown, sort_option)    
+        super().sort_by(self.sort_dropdown, sort_option)  
+        # Wait for results to refresh after sorting
+        self.result_items.first.wait_for(state="visible", timeout=15000)
 
     def get_result_title(self, index: int) -> str:
         EXCLUDED_KEYWORDS = ["Collection", "Box Set", "Boxset", "Series"]

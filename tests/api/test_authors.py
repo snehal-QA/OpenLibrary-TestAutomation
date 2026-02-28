@@ -18,6 +18,7 @@ def test_author_website_url_is_correct_for_first_book_search(api_client, search_
         Endpoints.SEARCH_BOOKS,
         query_params=search_params
     )
+    assert search_book_response.status_code == 200, f"Expected 200 but got {search_book_response.status_code}"
     search_book_data = search_book_response.json()
     assert search_book_data["numFound"] > 0, "No books found"
 
@@ -36,6 +37,7 @@ def test_author_website_url_is_correct_for_first_book_search(api_client, search_
     author_details_response = api_client.get_operation(
         Endpoints.GET_AUTHOR_DETAILS.format(author_key=author_key)
     )
+    assert author_details_response.status_code == 200, f"Expected 200 but got {author_details_response.status_code}"
     author_details = author_details_response.json()
     logger.debug("Author details response body: %s", author_details)
 
@@ -54,11 +56,14 @@ def test_author_website_url_is_correct_for_first_book_search(api_client, search_
     ],
 )
 def test_paginated_docs_count_never_exceeds_total_results_found(api_client, search_params):
-    response = api_client.get_operation(
+    search_book_response = api_client.get_operation(
         Endpoints.SEARCH_BOOKS,
         query_params=search_params
-    ).json()
+    )
 
+    assert search_book_response.status_code == 200, f"Expected 200 but got {search_book_response.status_code}"
+    
+    response = search_book_response.json()
     assert response["numFound"] > 0, "No results found"
     assert len(response["docs"]) > 0, "Docs array is empty"
     assert len(response["docs"]) <= response["numFound"], (
@@ -79,6 +84,7 @@ def test_search_returns_no_results_for_invalid_query(api_client, search_params):
         Endpoints.SEARCH_BOOKS,
         query_params=search_params
     )
+    assert search_book_response.status_code == 200, f"Expected 200 but got {search_book_response.status_code}"
     search_book_data = search_book_response.json()
 
     # Step 2 — Validate no results are returned
