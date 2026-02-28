@@ -8,17 +8,7 @@ class AuthorDetailsPage(BasePage):
         self.book_titles = page.locator("li.searchResultItem.sri--w-main h3.booktitle a.results")
     
     def sort_by(self, option_value: str) -> None:
-        sort_option = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
-        super().sort_by(self.sort_dropdown, sort_option)
-         # Wait for results to refresh
-        self.book_titles.first.wait_for(state="visible", timeout=15000)
-
+        self.sort_by_track_value(self.sort_dropdown, option_value, self.book_titles)  
+        
     def get_top_rated_book_title(self) -> str:
-        EXCLUDED_KEYWORDS = ["Collection", "Box Set", "Series"]
-        self.book_titles.first.wait_for(state="visible")
-        count = self.book_titles.count()
-        for i in range(count):
-            title = self.book_titles.nth(i).inner_text().strip()
-            if not any(keyword in title for keyword in EXCLUDED_KEYWORDS):
-                return title
-        return ""
+        return self.get_first_valid_title(self.book_titles)

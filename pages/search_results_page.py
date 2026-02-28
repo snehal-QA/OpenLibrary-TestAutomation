@@ -20,18 +20,8 @@ class SearchResultsPage(BasePage):
         author_locator.click()
 
     def sort_by(self, option_value: str) -> None:
-        sort_option = self.page.locator(f"a[data-ol-link-track='SearchSort|{option_value}']")
-        super().sort_by(self.sort_dropdown, sort_option)  
-        # Wait for results to refresh after sorting
-        self.result_items.first.wait_for(state="visible", timeout=15000)
-
-    def get_result_title(self, index: int) -> str:
-        EXCLUDED_KEYWORDS = ["Collection", "Box Set", "Boxset", "Series"]
-        count = self.result_items.count()
-        for i in range(index, count):
-            title_locator = self.result_items.nth(i).locator("a.results")
-            if title_locator.count():
-                title = title_locator.first.inner_text().strip()
-                if not any(keyword in title for keyword in EXCLUDED_KEYWORDS):
-                    return title
-        return ""
+        self.sort_by_track_value(self.sort_dropdown, option_value, self.result_items)  
+        
+    def get_result_title(self, index: int = 0) -> str:
+        title_locators = self.result_items.locator("a.results")
+        return self.get_first_valid_title(title_locators, start=index)
